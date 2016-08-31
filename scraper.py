@@ -36,18 +36,21 @@ for i in comic_pages_list:
     comic_page = requests.get('http://8muses.com' + i).text
     pictures = re.findall('[a-zA-Z0-9\-_+]*\.(?:jpg|gif|png)', comic_page)
     for u in pictures:
-        if len(u) == 73:
+        if len(u) == 73 or len(u) > 73:
             comic_url = "https://www.8muses.com/data/fu/small/" + u
             print(comic_url)
             comic_page_number = "{0}-{1}".format(x, u)
             file_path = "{0}/{1}".format(download_dir, url_split)
-            file_path2 = "{0}/{1}/{2}".format(download_dir, url_split, comic_page_number)
+            file_download_path = "{0}/{1}/{2}".format(download_dir, url_split, comic_page_number)
+            if os.path.isdir(download_dir) == False:
+                file_path = url_split
+                file_download_path = "{0}/{1}".format(url_split, comic_page_number)
             if os.path.isdir(file_path):
                 pass
             else:
                 os.mkdir(file_path)
             r = requests.get(comic_url, stream=True)
-            with open(file_path2, 'wb') as f:
+            with open(file_download_path, 'wb') as f:
                 for chunk in r:
                     f.write(chunk)
             x = x + 1
